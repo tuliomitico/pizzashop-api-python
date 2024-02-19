@@ -3,8 +3,7 @@ import datetime
 from datetime import timedelta
 
 
-from cuid2 import cuid_wrapper
-from flask import Response, request, redirect, make_response
+from flask import Response, redirect, request
 from flask_smorest import Blueprint
 from marshmallow import fields
 import jwt
@@ -12,23 +11,17 @@ import jwt
 
 from .errors.unauthorized_error import UnauthorizedError
 from ...schemas import ma
-from ...db.schema import User, AuthLinks, Restaurants
+from ...db.schema import AuthLinks, Restaurants
 from ...db.connection import db_session
-
-cuid_generator = cuid_wrapper()
 
 class QuerySchema(ma.Schema):
   code = fields.String()
   redirect= fields.Url()
 
-class UserSchema(ma.SQLAlchemyAutoSchema):
-  class Meta:
-    model = User
-
 auth_blp = Blueprint("authenticate-link", "authenticate-link", url_prefix="/auth-links/authenticate", description="Operations on authlink")
 
 def sign_user(payload) -> Response:
-  response = make_response('',200)
+  response = redirect(request.args.get('redirect'))
   response.set_cookie('auth',jwt.encode({
         "sub": payload['sub'],
         "restaurant_id": payload['restaurant_id'],
@@ -41,10 +34,8 @@ def sign_user(payload) -> Response:
 
 @auth_blp.route("",methods=['GET'])
 @auth_blp.arguments(QuerySchema,location='query',required=False)
-def index(body):
-  print(body)
+def index(body: QuerySchema):
   auth_link_from_code = AuthLinks.query.filter_by(code=body['code']).one_or_none()
-  print(auth_link_from_code)
   if not auth_link_from_code:
     raise UnauthorizedError()
   if (datetime.datetime.now() - auth_link_from_code.created_at) > timedelta(days=7):
@@ -56,4 +47,5 @@ def index(body):
 
   db_session.query(AuthLinks).filter(AuthLinks.user_id == auth_link_from_code.user_id).delete()
   db_session.commit()
-  return redirect(body['redirect'],Response=response)
+
+  return response

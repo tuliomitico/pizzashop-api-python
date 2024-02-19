@@ -10,6 +10,9 @@ from .http.routes.errors.unauthorized_error import UnauthorizedError
 from .http.routes.get_orders import blp
 from .http.routes.send_authentication_link import auth_blp
 from .http.routes.authenticate_from_link import auth_blp as authlink
+from .http.routes.register_restaurant import restaurant_blp
+from .http.routes.get_profile import profile_blp
+from .http.routes.get_managed_restaurant import restaurant_blp as managed_restaurant_blp
 
 
 app = Flask(__name__)
@@ -22,13 +25,16 @@ def setup_app(app: Flask) -> None:
     def unauthorized_error(e):
         return {"code":404,"message": str(e)},404
     api = Api()
+    cors.init_app(app, resources=r'/*',supports_credentials=True)
     jwt.init_app(app)
-    cors.init_app(app, resources=r'/*')
     ma.init_app(app)
     api.init_app(app)
     api.register_blueprint(blp)
     api.register_blueprint(auth_blp)
     api.register_blueprint(authlink)
+    api.register_blueprint(restaurant_blp)
+    api.register_blueprint(managed_restaurant_blp)
+    api.register_blueprint(profile_blp)
 
 def create_app(config = None) -> Flask:
     app = Flask(__name__)
@@ -42,5 +48,10 @@ def create_app(config = None) -> Flask:
     app.config["OPENAPI_URL_PREFIX"] = "/"
     app.config['OPENAPI_SWAGGER_UI_PATH'] ='/swagger-ui'
     app.config["OPENAPI_SWAGGER_UI_URL"] = "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
+    app.config["JWT_TOKEN_LOCATION"] = ["headers", "cookies", "json", "query_string"]
+    app.config["JWT_ACCESS_COOKIE_NAME"] = 'auth'
+    app.config['SECRET_KEY'] = "my-super-secret-key"
+    app.config['JWT_COOKIE_SECURE'] = True
+    app.config['JWT_COOKIE_CSRF_PROTECT '] = True
     setup_app(app)
     return app

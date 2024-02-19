@@ -19,6 +19,8 @@ def my_invalid_token_loader(jwt_data):
 
 @jwt.expired_token_loader
 def my_expired_token_loader(_jwt_header, jwt_data):
+  print(_jwt_header)
+  print(jwt_data)
   return {'message': 'the token is expired'}, 403
 
 @jwt.unauthorized_loader

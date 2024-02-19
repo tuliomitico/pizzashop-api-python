@@ -16,10 +16,6 @@ cuid_generator = cuid_wrapper()
 class BodySchema(ma.Schema):
   email = fields.Email()
 
-class UserSchema(ma.SQLAlchemyAutoSchema):
-  class Meta:
-    model = User
-
 auth_blp = Blueprint("authenticate", "authenticate", url_prefix="/authenticate", description="Operations on auth")
 
 @auth_blp.route("",methods=['POST'])
