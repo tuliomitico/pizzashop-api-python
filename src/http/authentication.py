@@ -1,4 +1,6 @@
-from flask_jwt_extended import JWTManager
+from flask_jwt_extended import JWTManager, jwt_required
+from copy import deepcopy
+from functools import wraps
 
 from ..db.schema import User
 
@@ -26,3 +28,18 @@ def my_expired_token_loader(_jwt_header, jwt_data):
 @jwt.unauthorized_loader
 def my_unauthorized_loader(jwt_data):
   return {'message': 'A valid token is missing'}, 403
+
+
+
+
+def jwt_required_with_doc(*args, **kwargs):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*f_args, **f_kwargs):
+            return jwt_required(*args, **kwargs)(func)(*f_args, **f_kwargs)
+
+        wrapper._apidoc = deepcopy(getattr(func, "_apidoc", {}))
+        wrapper._apidoc.setdefault('manual_doc', {})
+        wrapper._apidoc['manual_doc']['security'] = [{"Bearer Auth": []}]
+        return wrapper
+    return decorator

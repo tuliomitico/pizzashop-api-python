@@ -12,6 +12,7 @@ from .http.routes.send_authentication_link import auth_blp
 from .http.routes.authenticate_from_link import auth_blp as authlink
 from .http.routes.register_restaurant import restaurant_blp
 from .http.routes.get_profile import profile_blp
+from .http.routes.update_profile import update_profile_blp
 from .http.routes.get_managed_restaurant import restaurant_blp as managed_restaurant_blp
 
 
@@ -35,6 +36,7 @@ def setup_app(app: Flask) -> None:
     api.register_blueprint(restaurant_blp)
     api.register_blueprint(managed_restaurant_blp)
     api.register_blueprint(profile_blp)
+    api.register_blueprint(update_profile_blp)
 
 def create_app(config = None) -> Flask:
     app = Flask(__name__)
@@ -53,5 +55,18 @@ def create_app(config = None) -> Flask:
     app.config['SECRET_KEY'] = "my-super-secret-key"
     app.config['JWT_COOKIE_SECURE'] = True
     app.config['JWT_COOKIE_CSRF_PROTECT '] = True
+    app.config['API_SPEC_OPTIONS'] = {
+        "components": {
+            "securitySchemes": {
+                "Bearer Auth": {
+                    "type": "apiKey",
+                    "in": "cookies",
+                    "name": "Authorization",
+                    "bearerFormat": "JWT",
+                    "description": "Enter: **'Bearer &lt;JWT&gt;'**, where JWT is the access token",
+                }
+            }
+        },
+    }
     setup_app(app)
     return app

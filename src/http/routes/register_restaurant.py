@@ -1,8 +1,3 @@
-import typing as t
-
-
-from cuid2 import cuid_wrapper
-from flask import request
 from flask_smorest import Blueprint
 from marshmallow import fields
 
@@ -10,14 +5,11 @@ from marshmallow import fields
 from ...schemas import ma
 from ...db.schema import Restaurants, User
 
-cuid_generator = cuid_wrapper()
-
 class BodySchema(ma.Schema):
   email = fields.Email()
   restaurantName = fields.String()
   managerName = fields.String()
   phone = fields.String()
-
 
 
 restaurant_blp = Blueprint("restaurant", "restaurant", url_prefix="/restaurants", description="Operations on restaurant")
