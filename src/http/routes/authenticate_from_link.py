@@ -4,6 +4,7 @@ from datetime import timedelta
 
 
 from flask import Response, redirect, request
+from flask_jwt_extended import set_access_cookies
 from flask_smorest import Blueprint
 from marshmallow import fields
 import jwt
@@ -22,14 +23,14 @@ auth_blp = Blueprint("authenticate-link", "authenticate-link", url_prefix="/auth
 
 def sign_user(payload) -> Response:
   response = redirect(request.args.get('redirect'))
-  response.set_cookie('auth',jwt.encode({
+  set_access_cookies(response,jwt.encode({
         "sub": payload['sub'],
         "restaurant_id": payload['restaurant_id'],
         "iat": datetime.datetime.utcnow(),
-        "exp": datetime.datetime.utcnow() + timedelta(minutes=45)
+        "exp": datetime.datetime.utcnow() + timedelta(minutes=45),
       },
       "my-super-secret-key",
-      algorithm='HS256'),httponly=True,max_age=7 * 86400,path='/')
+      algorithm='HS256'),max_age=7 * 86400)
   return response
 
 @auth_blp.route("",methods=['GET'])

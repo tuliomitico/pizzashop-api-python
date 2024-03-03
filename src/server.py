@@ -54,7 +54,8 @@ def create_app(config = None) -> Flask:
     app.config["JWT_ACCESS_COOKIE_NAME"] = 'auth'
     app.config['SECRET_KEY'] = "my-super-secret-key"
     app.config['JWT_COOKIE_SECURE'] = True
-    app.config['JWT_COOKIE_CSRF_PROTECT '] = True
+    app.config['JWT_COOKIE_CSRF_PROTECT'] = False
+    app.config['JWT_CSRF_IN_COOKIES'] = False
     app.config['API_SPEC_OPTIONS'] = {
         "components": {
             "securitySchemes": {
