@@ -1,6 +1,6 @@
 import typing as t
 import datetime
-from datetime import timedelta
+from datetime import timedelta, timezone, datetime
 
 
 from flask import Response, redirect, request
@@ -26,8 +26,8 @@ def sign_user(payload) -> Response:
   set_access_cookies(response,jwt.encode({
         "sub": payload['sub'],
         "restaurant_id": payload['restaurant_id'],
-        "iat": datetime.datetime.utcnow(),
-        "exp": datetime.datetime.utcnow() + timedelta(minutes=45),
+        "iat": datetime.utcnow(),
+        "exp": datetime.utcnow() + timedelta(minutes=45),
       },
       "my-super-secret-key",
       algorithm='HS256'),max_age=7 * 86400)
@@ -39,7 +39,7 @@ def index(body: QuerySchema):
   auth_link_from_code = AuthLinks.query.filter_by(code=body['code']).one_or_none()
   if not auth_link_from_code:
     raise UnauthorizedError()
-  if (datetime.datetime.now() - auth_link_from_code.created_at) > timedelta(days=7):
+  if (datetime.utcnow() - auth_link_from_code.created_at) > timedelta(days=7):
     raise UnauthorizedError()
   
   managed_restaurant = Restaurants.query.filter_by(manager_id=auth_link_from_code.user_id).one_or_none()
