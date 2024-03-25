@@ -1,16 +1,15 @@
-version: '3.7'
+version: '3.8'
 
 services:
   postgres:
-    image: bitnami/postgresql:latest
+    container-name: pizzashop-api
+    image: postgresql
     ports:
       - '5432:5432'
     environment:
-      - POSTGRES_USER=docker
-      - POSTGRES_PASSWORD=docker
-      - POSTGRES_DB=pizzashop
+      - POSTGRES_USER: docker
+      - POSTGRES_PASSWORD: docker
+      - POSTGRES_DB: pizzashop
+      - PGDATA: /data/postgres
     volumes:
-      - postgres_data:/bitnami/postgresql
-
-volumes:
-  postgres_data:
+      - ./data/pg:/data/postgres

@@ -1,6 +1,6 @@
 from sqlalchemy import *
 from sqlalchemy.engine.url import URL
-from sqlalchemy.orm import ( scoped_session, sessionmaker, DeclarativeBase )
+from sqlalchemy.orm import ( scoped_session, sessionmaker, declarative_base )
 
 url = URL(
     drivername='postgresql+psycopg2',
@@ -18,7 +18,7 @@ db_session = scoped_session(sessionmaker(autocommit=False,
                                          autoflush=False,
                                          bind=engine))
 
-Base = DeclarativeBase()
+Base = declarative_base()
 # We will need this for querying
 Base.query = db_session.query_property()
 
