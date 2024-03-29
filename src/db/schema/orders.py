@@ -14,7 +14,7 @@ class Orders(Base):
     __tablename__ = 'orders'
     id = sa.Column(sa.Text,default=cuid_wrapper(),primary_key = True)
     customer_id = sa.Column(sa.Text,sa.ForeignKey('users.id'))
-    customer = orm.relationship('User')
+    customer = orm.relationship('User',backref='user')
     restaurant_id = sa.Column(sa.Text,sa.ForeignKey('restaurants.id'))
     restaurant = orm.relationship('Restaurants')
     status = sa.Column(ENUM("pending","canceled","processing","delivering","delivered",name='order_status'))
