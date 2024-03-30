@@ -25,4 +25,4 @@ Base.query = db_session.query_property()
 def init_db(engine=engine):
   db_session.configure(bind=engine)
   Base.metadata.bind = engine
-  Base.metadata.create_all()
+  Base.metadata.create_all(bind=engine)

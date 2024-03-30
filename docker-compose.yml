@@ -1,15 +1,15 @@
-version: '3.8'
+version: "3.8"
 
 services:
   postgres:
-    container-name: pizzashop-api
-    image: postgresql
+    container_name: pizzashop-api
+    image: postgres
     ports:
-      - '5432:5432'
+      - "5432:5432"
     environment:
-      - POSTGRES_USER: docker
-      - POSTGRES_PASSWORD: docker
-      - POSTGRES_DB: pizzashop
-      - PGDATA: /data/postgres
+      POSTGRES_USER: docker
+      POSTGRES_PASSWORD: docker
+      POSTGRES_DB: pizzashop
+      PGDATA: /data/postgres
     volumes:
       - ./data/pg:/data/postgres
