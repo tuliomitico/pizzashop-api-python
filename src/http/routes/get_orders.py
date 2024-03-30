@@ -35,22 +35,32 @@ blp = Blueprint("orders", "orders", url_prefix="/orders", description="Operation
 @blp.route("",methods=['GET'])
 @blp.arguments(OrdersBodySchema,location='query')
 @jwt_required_with_doc(locations=['cookies'])
-def index(query):
+def index(query: OrdersBodySchema):
   restaurant = get_jwt()
   restaurant_id = restaurant['restaurant_id']
 
   if not restaurant_id:
     return {"error":"User is not a restaurant manager"}, 401
   
-  raw_orders = Orders.query.filter_by(restaurant_id=restaurant_id).order_by(Orders.created_at.desc()).limit(10).offset(query['pageIndex'])
+  raw_orders = Orders.query.filter_by(restaurant_id=restaurant_id).order_by(Orders.created_at.desc())
 
-  orders = OrderSchema().dump(raw_orders,many=True)
+  raw_query = raw_orders 
+  if query.get('status'):
+    print(query.get('status'))
+    raw_query = raw_query.filter_by(status=query.get('status'))
+  if query.get('orderId'):
+    raw_query = raw_query.filter(Orders.id.ilike("%"+query.get('orderId')+"%"))
+  if query.get('customerName'):
+      raw_query = raw_query.join(User,User.id==Orders.customer_id).filter(User.name.ilike("%"+query.get('customerName')+"%"))
+
+  orders = OrderSchema().dump(raw_query.limit(10).offset(query['pageIndex'] * 10),many=True)
 
   result = {
     "orders": orders,
     "meta": {
       "pageIndex": query['pageIndex'],
-      "totalCount": raw_orders.count()
+      "totalCount": raw_query.count(),
+      "perPage": 10
     }
   }
 
