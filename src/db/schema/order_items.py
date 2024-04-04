@@ -13,9 +13,9 @@ class OrderItems(Base):
     __tablename__ = 'order_items'
     id = sa.Column(sa.Text,default=cuid_wrapper(),primary_key = True)
     order_id = sa.Column(sa.Text,sa.ForeignKey('orders.id',ondelete='CASCADE'))
-    order = orm.relationship('Orders')
+    order = orm.relationship('Orders',back_populates='order_items')
     product_id = sa.Column(sa.Text,sa.ForeignKey('products.id',ondelete='SET NULL'))
-    product = orm.relationship('Products')
+    product = orm.relationship('Products',backref='products',lazy='joined')
     quantity = sa.Column(sa.Integer,default=1)
     price_in_cents = sa.Column(sa.Integer,nullable=False)
 
