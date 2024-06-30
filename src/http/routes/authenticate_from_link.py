@@ -39,7 +39,7 @@ def index(body: QuerySchema):
   auth_link_from_code = AuthLinks.query.filter_by(code=body['code']).one_or_none()
   if not auth_link_from_code:
     raise UnauthorizedError()
-  if (datetime.now(timezone.utc) - auth_link_from_code.created_at) > timedelta(days=7):
+  if (datetime.now() - auth_link_from_code.created_at) > timedelta(days=7):
     raise UnauthorizedError()
   
   managed_restaurant = Restaurants.query.filter_by(manager_id=auth_link_from_code.user_id).one_or_none()
