@@ -13,7 +13,7 @@ services:
       PGDATA: /data/postgres
     volumes:
       - ./data/pg:/data/postgres
-    restart: always
+    restart: unless-stopped
     networks:
       - pizzashop_ntwk
   pgadmin:
@@ -24,7 +24,7 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: ezample@example.com
       PGADMIN_DEFAULT_PASSWORD: admin
-    restart: always
+    restart: unless-stopped
     networks:
       - pizzashop_ntwk
 

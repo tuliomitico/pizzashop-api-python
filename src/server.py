@@ -17,6 +17,9 @@ from .http.routes.get_managed_restaurant import restaurant_blp as managed_restau
 from .http.routes.sign_out import signout_blp
 from .http.routes.get_orders_details import order_blp
 from .http.routes.cancel_order import cancel_order_blp
+from .http.routes.approve_order import approve_order_blp
+from .http.routes.deliver_order import deliver_order_blp
+from .http.routes.dispatch_order import dispatch_order_blp
 
 
 app = Flask(__name__)
@@ -43,6 +46,9 @@ def setup_app(app: Flask) -> None:
     api.register_blueprint(signout_blp)
     api.register_blueprint(order_blp)
     api.register_blueprint(cancel_order_blp)
+    api.register_blueprint(approve_order_blp)
+    api.register_blueprint(deliver_order_blp)
+    api.register_blueprint(dispatch_order_blp)
 
 def create_app(config = None) -> Flask:
     app = Flask(__name__)
