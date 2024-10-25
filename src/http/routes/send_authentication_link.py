@@ -13,13 +13,13 @@ from ...db.schema import User, AuthLinks
 
 cuid_generator = cuid_wrapper()
 
-class BodySchema(ma.Schema):
+class SendAuthenticationLinkBodySchema(ma.Schema):
   email = fields.Email()
 
 auth_blp = Blueprint("authenticate", "authenticate", url_prefix="/authenticate", description="Operations on auth")
 
 @auth_blp.route("",methods=['POST'])
-@auth_blp.arguments(BodySchema,location='json')
+@auth_blp.arguments(SendAuthenticationLinkBodySchema,location='json')
 def index(body):
   user_from_email: t.Union[None,User] = User.query.filter_by(email=body["email"]).first()
   if not user_from_email:

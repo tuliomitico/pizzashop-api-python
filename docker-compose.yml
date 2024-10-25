@@ -16,6 +16,7 @@ services:
     restart: unless-stopped
     networks:
       - pizzashop_ntwk
+    user: 1000:1000
   pgadmin:
     container_name: pgadmin
     image: dpage/pgadmin4:latest
