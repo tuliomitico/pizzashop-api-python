@@ -24,6 +24,7 @@ from .http.routes.get_month_orders_amount import month_order_blp
 from .http.routes.get_month_canceled_orders import month_canceled_order_blp
 from .http.routes.get_month_receipt import month_receipt_blp
 from .http.routes.get_popular_products import popular_products_blp
+from .http.routes.get_daily_receipt_in_period import daily_receipt_blp
 
 app = Flask(__name__)
 
@@ -61,6 +62,7 @@ def setup_app(app: Flask) -> None:
     api.register_blueprint(month_canceled_order_blp)
     api.register_blueprint(month_receipt_blp)
     api.register_blueprint(popular_products_blp)
+    api.register_blueprint(daily_receipt_blp)
 
 def create_app(config = None) -> Flask:
     
